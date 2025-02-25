@@ -157,6 +157,31 @@
             border-radius: 8px;
         }
 
+        .learn-more h3, .related-topics h3 {
+            color: var(--secondary);
+            margin: 25px 0 15px;
+            font-size: 18px;
+        }
+
+        .report-list p {
+            margin: 8px 0;
+            padding-left: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .report-list p:hover {
+            color: var(--secondary);
+        }
+
+        .report-list p:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+        }
+
         .disclaimer {
             font-size: 14px;
             font-weight: 600;
@@ -245,7 +270,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="Logo.png" class="logo">
+        <img src="C:\Users\jmangold\OneDrive - Advisys\Logo Images\Logo.png" alt="Advisys Logo" class="logo">
         <h1>Should I pay my debt off faster or invest?</h1>
     </div>
 
@@ -277,6 +302,25 @@
             <div class="results-text">
                 <p id="resultMessage" class="result-message"></p>
                 <p id="recommendationText"></p>
+                
+                <div class="learn-more">
+                    <h3>Learn More:</h3>
+                    <div class="report-list">
+                        <p>"Understanding Interest Rates"</p>
+                        <p>"Investment Basics"</p>
+                        <p>"Debt Reduction Strategies"</p>
+                    </div>
+                </div>
+
+                <div class="related-topics">
+                    <h3>Related Topics:</h3>
+                    <div class="report-list">
+                        <p>"Compound Interest Explained"</p>
+                        <p>"Risk vs Reward in Investing"</p>
+                        <p>"Budgeting for Financial Freedom"</p>
+                    </div>
+                </div>
+
                 <p class="disclaimer">The suggested recommendations serve as general guidelines but may differ based on your unique financial circumstances. Contact a financial representative for a more personalized assessment.</p>
                 <button class="download-button" onclick="downloadPDF()">Download Results</button>
             </div>
