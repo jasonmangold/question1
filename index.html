@@ -251,6 +251,75 @@
             padding-top: 10px;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .modal-content input[type="email"] {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .submit-email {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .submit-email:hover {
+            background: #2980b9;
+        }
+
+        .cancel-email {
+            background: #e0e0e0;
+            color: var(--text);
+        }
+
+        .cancel-email:hover {
+            background: #d0d0d0;
+        }
+
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
@@ -322,7 +391,18 @@
                 </div>
 
                 <p class="disclaimer">The suggested recommendations serve as general guidelines but may differ based on your unique financial circumstances. Contact a financial representative for a more personalized assessment.</p>
-                <button class="download-button" onclick="downloadPDF()">Download Results</button>
+                <button class="download-button" onclick="showEmailModal()">Download Results</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <h3>Enter Your Email</h3>
+            <input type="email" id="emailInput" placeholder="your@email.com">
+            <div class="modal-buttons">
+                <button class="modal-button submit-email" onclick="submitEmail()">Submit</button>
+                <button class="modal-button cancel-email" onclick="closeModal()">Cancel</button>
             </div>
         </div>
     </div>
@@ -345,14 +425,14 @@
                     {
                         label: 'Debt Interest Rate',
                         data: [0],
-                        backgroundColor: '#e74c3c', // Red
+                        backgroundColor: '#e74c3c',
                         borderWidth: 0,
                         borderRadius: 5
                     },
                     {
                         label: 'Investment Return',
                         data: [0],
-                        backgroundColor: '#2ecc71', // Green
+                        backgroundColor: '#2ecc71',
                         borderWidth: 0,
                         borderRadius: 5
                     }
@@ -370,7 +450,7 @@
                         beginAtZero: true,
                         grid: { color: '#e0e0e0' },
                         title: { display: true, text: 'Percentage (%)' },
-                        max: 15 // Default max, will adjust dynamically
+                        max: 15
                     }
                 },
                 plugins: {
@@ -383,17 +463,14 @@
             const debtRate = parseFloat(debtRateInput.value) || 0;
             const ror = parseFloat(rorInput.value) || 0;
 
-            // Update chart data
             comparisonChart.data.datasets[0].data = [debtRate];
             comparisonChart.data.datasets[1].data = [ror];
             
-            // Dynamically adjust y-axis max to accommodate larger values
             const maxValue = Math.max(debtRate, ror, 10);
-            comparisonChart.options.scales.y.max = Math.ceil(maxValue * 1.2); // 20% buffer
+            comparisonChart.options.scales.y.max = Math.ceil(maxValue * 1.2);
             
             comparisonChart.update();
 
-            // Update result message and recommendation
             if (ror > debtRate) {
                 resultMessage.textContent = "You can earn more on your investment than your debt will cost.";
                 recommendationText.textContent = "With a potential rate of return higher than your debt's interest rate, investing could help you build wealth faster while keeping your debt manageable. This approach allows your money to work harder for you over time.\n\nSpeaking with a financial representative can help you create a balanced strategy that maximizes your investments while ensuring you stay on track with your debt payments and overall goals.";
@@ -407,6 +484,29 @@
                 ror,
                 recommendation: resultMessage.textContent
             };
+        }
+
+        function showEmailModal() {
+            const modal = document.getElementById('emailModal');
+            modal.style.display = 'flex';
+            document.getElementById('emailInput').focus();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('emailModal');
+            modal.style.display = 'none';
+            document.getElementById('emailInput').value = '';
+        }
+
+        function submitEmail() {
+            const email = document.getElementById('emailInput').value;
+            if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                console.log('Email submitted:', email);
+                closeModal();
+                downloadPDF();
+            } else {
+                alert('Please enter a valid email address');
+            }
         }
 
         function downloadPDF() {
@@ -449,7 +549,12 @@
             input.addEventListener('input', updateChart);
         });
 
-        // Initial chart update
+        document.getElementById('emailInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitEmail();
+            }
+        });
+
         updateChart();
     </script>
 </body>
